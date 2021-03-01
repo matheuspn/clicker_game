@@ -1,0 +1,79 @@
+<Manager>:
+    id: manager
+
+<Navbar@BoxLayout>:
+    orientation: 'horizontal'
+    size_hint_y: 0.1
+    Button:
+        text: "home"
+        on_press: app.root.current = 'home'
+    Button:
+        text: "loja"
+        on_press: app.root.current = 'shop'
+
+<Itembar@BoxLayout>:
+    orientation: 'horizontal'
+    size_hint_y:0.2
+    canvas:
+        Rectangle:
+            source: "utils/itembar.png"
+            pos: self.pos
+            size: self.size
+
+<Home>:
+    id: home
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            size_hint_y: 0.1
+            text: "0 gold"
+            id: money
+        BoxLayout:
+            size_hint_y: 0.8
+            canvas.before:
+                Color: 
+                    rgba: 0.9, 0.9, 0.9, 0.5
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Button:
+                background_normal: "utils/estrela.png"
+                background_down: "utils/estrela_down.png"
+                on_press: root.gold_button()
+        Navbar:
+            
+            
+        
+<Shop>:
+    id: shop
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            size_hint_y: 0.1
+            text: "0 gold"
+            id: money
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: 0.8
+            Itembar:
+                Button:
+                    background_normal: "utils/esfera.png"
+                BoxLayout:
+                    orientation: 'vertical'
+                    Button:
+                        text: "10"
+                        id: b1_cost
+                        on_press: root.shop_button1()
+                    Label:
+                        text: "0.2/s"
+                        id: production1
+            Itembar:
+                Button:
+                    background_normal: "utils/esfera.png"
+                BoxLayout:
+                    orientation: 'vertical'
+                    Label:
+                        text: "$ por segundo"
+                    Label:
+                        text: "Custo em $"
+        Navbar:
