@@ -20,32 +20,35 @@ class Shop(Screen):
         },
         "button2": {
             "base_cost": 50,
-            "base_production": 50,
+            "base_production": 10,
             "rate": 1.15,
         }
     })
 
     def new_cost(self, cost_base, rate, owned):
-        return cost_base * (rate ** owned)
-        
+        """
+        Define new cost to the buttons
+        """
+        return cost_base * (rate ** owned)  
 
-    def shop_button1(self):
+    def shop_button(self, n):
+        """
+        Operation for all upgrade buttons
+        """
         # aumentando o número de upgrades
-        manager.upgrades["button1"]["owned"] += 1
+        manager.upgrades[f"button{n}"]["owned"] += 1
         # debitando o valor
-        manager.gold -= manager.upgrades["button1"]["cost"]
+        manager.gold -= manager.upgrades[f"button{n}"]["cost"]
         # aumentando a produção
-        manager.upgrades["button1"]["production"] = (
-            self.base_buttons["button1"]["base_production"] * manager.upgrades["button1"]["owned"]
-            ) *  manager.upgrades["button1"]["multipliers"]
-        print(manager.upgrades["button1"]["production"])
+        manager.upgrades[f"button{n}"]["production"] = (
+            self.base_buttons[f"button{n}"]["base_production"] * manager.upgrades[f"button{n}"]["owned"]
+            ) *  manager.upgrades[f"button{n}"]["multipliers"]
+        #print(manager.upgrades[f"button{n}"]["production"])
         # atribuindo novo valor de compra
-        manager.upgrades["button1"]["cost"] += self.new_cost(
-            self.base_buttons["button1"]["base_cost"],
-            self.base_buttons["button1"]["rate"],
-            manager.upgrades["button1"]["owned"] )
-        # atualizando valor de compra na tela
-        self.ids.b1_cost.text = str(round(manager.upgrades["button1"]["cost"], 2))
+        manager.upgrades[f"button{n}"]["cost"] += self.new_cost(
+            self.base_buttons[f"button{n}"]["base_cost"],
+            self.base_buttons[f"button{n}"]["rate"],
+            manager.upgrades[f"button{n}"]["owned"] )
 
 
 class Manager(ScreenManager):
@@ -56,6 +59,12 @@ class Manager(ScreenManager):
             "owned" : 0,
             "multipliers": 1,
             "production": 0
+        },
+        "button2": {
+            "cost" : 50,
+            "owned" : 0,
+            "multipliers": 1,
+            "production": 0
         }
     })
 
@@ -63,13 +72,24 @@ class Manager(ScreenManager):
     production = NumericProperty(0.0)
       
     def update(self, dt):
+        shop = self.get_screen('shop')
+        home = self.get_screen('home')
         # testando se é possível comprar o upgrade
+        # button1
         if self.gold < self.upgrades["button1"]["cost"]:
-            self.get_screen('shop').ids.b1_cost.disabled = True
-        else: self.get_screen('shop').ids.b1_cost.disabled = False
+            shop.ids.b1_cost.disabled = True
+        else: shop.ids.b1_cost.disabled = False
+        # button2
+        if self.gold < self.upgrades["button2"]["cost"]:
+            shop.ids.b2_cost.disabled = True
+        else: shop.ids.b2_cost.disabled = False
 
-        self.get_screen('home').ids.money.text = f"{self.gold:.1f} gold"
-        self.get_screen('shop').ids.money.text = f"{self.gold:.1f} gold"
+        # atualizando valores de compra na tela
+        shop.ids.b1_cost.text = str(round(manager.upgrades["button1"]["cost"], 2))
+        shop.ids.b2_cost.text = str(round(manager.upgrades["button2"]["cost"], 2))
+
+        home.ids.money.text = f"{self.gold:.1f} gold"
+        shop.ids.money.text = f"{self.gold:.1f} gold"
 
     def gold_produce(self, dt):
         aux = 0

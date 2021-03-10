@@ -63,17 +63,20 @@
                     Button:
                         text: "10"
                         id: b1_cost
-                        on_press: root.shop_button1()
+                        on_press: root.shop_button(1)
                     Label:
-                        text: "0.2/s"
+                        text: "0.1/s"
                         id: production1
             Itembar:
                 Button:
                     background_normal: "utils/esfera.png"
                 BoxLayout:
                     orientation: 'vertical'
+                    Button:
+                        text: "50"
+                        id: b2_cost
+                        on_press: root.shop_button(2)
                     Label:
-                        text: "$ por segundo"
-                    Label:
-                        text: "Custo em $"
+                        text: "10/s"
+                        id: production2
         Navbar:
